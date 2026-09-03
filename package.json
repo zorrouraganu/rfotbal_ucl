@@ -1,0 +1,55 @@
+{
+  "name": "ucl-predictions",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --webpack",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "prestart": "tsx scripts/validate-env.ts",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prisma:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:seed": "prisma db seed",
+    "db:reset": "prisma migrate reset",
+    "worker:live-scores": "tsx scripts/live-score-worker.ts",
+    "sync:espn-fixtures": "tsx scripts/sync-espn-fixtures.ts",
+    "seed:demo": "tsx scripts/seed-demo.ts",
+    "reset:local-db": "tsx scripts/reset-local-db.ts",
+    "playwright": "playwright test"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "7.9.1",
+    "@prisma/client": "7.9.1",
+    "lucide-react": "1.23.0",
+    "next": "16.3.2",
+    "pg": "8.22.0",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "server-only": "0.0.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.61.1",
+    "@tailwindcss/postcss": "4.3.2",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "eslint": "latest",
+    "eslint-config-next": "16.3.2",
+    "prisma": "7.9.1",
+    "tailwindcss": "4.3.2",
+    "tsx": "latest",
+    "typescript": "^6.0.3",
+    "vitest": "4.1.10"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
+  "overrides": {
+    "deepmerge-ts": "8.0.2",
+    "mysql2": "3.24.3"
+  }
+}

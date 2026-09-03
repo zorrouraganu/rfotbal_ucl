@@ -1,0 +1,67 @@
+name: uclpredictions
+
+services:
+  postgres:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    env_file:
+      - path: ${ENV_FILE:-.env.production}
+        required: true
+    volumes:
+      - ucl-postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    image: uclpredictions-app:latest
+    build: .
+    restart: unless-stopped
+    env_file:
+      - path: ${ENV_FILE:-.env.production}
+        required: true
+    depends_on:
+      postgres:
+        condition: service_healthy
+    expose:
+      - "3000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/api/health >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  worker:
+    image: uclpredictions-app:latest
+    build: .
+    restart: unless-stopped
+    env_file:
+      - path: ${ENV_FILE:-.env.production}
+        required: true
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ["npm", "run", "worker:live-scores"]
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - web
+    env_file:
+      - path: ${ENV_FILE:-.env.production}
+        required: true
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  ucl-postgres-data:
+  caddy-data:
+  caddy-config:

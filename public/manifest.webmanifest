@@ -1,0 +1,12 @@
+{
+  "name": "UCL Predictions",
+  "short_name": "UCL Picks",
+  "description": "Predicții pentru UEFA Champions League 2026–27",
+  "start_url": "/account",
+  "display": "standalone",
+  "background_color": "#05071d",
+  "theme_color": "#070a2d",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

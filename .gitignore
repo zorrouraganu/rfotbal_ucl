@@ -1,0 +1,17 @@
+.env
+.env.*
+!.env.example
+!.env.production.example
+node_modules
+.next
+coverage
+playwright-report
+test-results
+dist
+*.tsbuildinfo
+.artifacts
+.agents
+.ucl-*.log
+*.log
+backups
+AGENTS.md

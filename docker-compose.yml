@@ -1,0 +1,40 @@
+name: uclpredictions
+
+services:
+  postgres:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: uclpredictions
+      POSTGRES_USER: uclpredictions
+      POSTGRES_PASSWORD: uclpredictions
+    ports:
+      - "5433:5432"
+    volumes:
+      - ucl-postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U uclpredictions -d uclpredictions"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://uclpredictions:uclpredictions@postgres:5432/uclpredictions?schema=public
+      APP_BASE_URL: ${APP_BASE_URL:-http://localhost:3000}
+      REDDIT_CLIENT_ID: ${REDDIT_CLIENT_ID:-configure-reddit-client}
+      REDDIT_CLIENT_SECRET: ${REDDIT_CLIENT_SECRET:-configure-reddit-secret}
+      REDDIT_REDIRECT_URI: ${REDDIT_REDIRECT_URI:-http://localhost:3000/api/auth/reddit/callback}
+      REDDIT_USER_AGENT: ${REDDIT_USER_AGENT:-web:ucl-predictions:0.1 (by /u/satibagipula)}
+      LIVE_SCORE_PROVIDER: ${LIVE_SCORE_PROVIDER:-manual}
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+
+volumes:
+  ucl-postgres-data:

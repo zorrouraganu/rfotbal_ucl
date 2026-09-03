@@ -1,0 +1,232 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum CompetitionStage {
+  LEAGUE_PHASE
+  KNOCKOUT_PLAYOFF
+  ROUND_OF_16
+  QUARTER_FINAL
+  SEMI_FINAL
+  FINAL
+}
+
+enum MatchLeg {
+  SINGLE
+  FIRST
+  SECOND
+}
+
+enum MatchStatus {
+  SCHEDULED
+  LOCKED
+  LIVE
+  HALF_TIME
+  FINAL
+  POSTPONED
+}
+
+enum PredictionSelection {
+  HOME
+  DRAW
+  AWAY
+  HOME_OR_DRAW
+  DRAW_OR_AWAY
+  HOME_OR_AWAY
+}
+
+model Player {
+  id                       String       @id @default(cuid())
+  publicId                 String       @unique @default(cuid())
+  redditId                 String       @unique
+  redditUsername           String
+  redditUsernameNormalized String       @unique
+  nickname                 String?
+  isActive                 Boolean      @default(true)
+  lastLoginAt              DateTime     @default(now())
+  sessions                 Session[]
+  predictions              Prediction[]
+  createdAt                DateTime     @default(now())
+  updatedAt                DateTime     @updatedAt
+
+  @@index([redditUsername])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  playerId  String
+  player    Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([playerId])
+  @@index([expiresAt])
+}
+
+model Competition {
+  id                 String        @id @default(cuid())
+  publicId           String        @unique @default(cuid())
+  name               String
+  seasonLabel        String
+  isActive           Boolean       @default(true)
+  simulationScenario String?
+  teams              Team[]
+  ties               KnockoutTie[]
+  matches            Match[]
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+}
+
+model Team {
+  id             String        @id @default(cuid())
+  publicId       String        @unique @default(cuid())
+  competitionId  String
+  competition    Competition   @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+  espnId         String?
+  name           String
+  shortName      String
+  abbreviation   String
+  crestUrl       String?
+  coefficient    Float         @default(0)
+  homeMatches    Match[]       @relation("HomeTeam")
+  awayMatches    Match[]       @relation("AwayTeam")
+  tiesAsFirst    KnockoutTie[] @relation("TieFirstTeam")
+  tiesAsSecond   KnockoutTie[] @relation("TieSecondTeam")
+  qualifiedTies  KnockoutTie[] @relation("QualifiedTeam")
+  qualifierPicks Prediction[]  @relation("QualifierPick")
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@unique([competitionId, espnId])
+  @@unique([competitionId, abbreviation])
+  @@index([competitionId, name])
+}
+
+model KnockoutTie {
+  id              String           @id @default(cuid())
+  publicId        String           @unique @default(cuid())
+  competitionId   String
+  competition     Competition      @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+  stage           CompetitionStage
+  label           String
+  bracketOrder    Int
+  firstTeamId     String
+  firstTeam       Team             @relation("TieFirstTeam", fields: [firstTeamId], references: [id], onDelete: Restrict)
+  secondTeamId    String
+  secondTeam      Team             @relation("TieSecondTeam", fields: [secondTeamId], references: [id], onDelete: Restrict)
+  qualifiedTeamId String?
+  qualifiedTeam   Team?            @relation("QualifiedTeam", fields: [qualifiedTeamId], references: [id], onDelete: SetNull)
+  matches         Match[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@unique([competitionId, stage, bracketOrder])
+  @@index([competitionId, stage])
+}
+
+model Match {
+  id                     String            @id @default(cuid())
+  publicId               String            @unique @default(cuid())
+  competitionId          String
+  competition            Competition       @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+  tieId                  String?
+  tie                    KnockoutTie?      @relation(fields: [tieId], references: [id], onDelete: SetNull)
+  stage                  CompetitionStage
+  leg                    MatchLeg          @default(SINGLE)
+  matchday               Int?
+  label                  String
+  homeTeamId             String
+  homeTeam               Team              @relation("HomeTeam", fields: [homeTeamId], references: [id], onDelete: Restrict)
+  awayTeamId             String
+  awayTeam               Team              @relation("AwayTeam", fields: [awayTeamId], references: [id], onDelete: Restrict)
+  kickoffUtc             DateTime
+  venue                  String?
+  status                 MatchStatus       @default(SCHEDULED)
+  liveHomeScore          Int?
+  liveAwayScore          Int?
+  homeScore90            Int?
+  awayScore90            Int?
+  homeDisciplinaryPoints Int               @default(0)
+  awayDisciplinaryPoints Int               @default(0)
+  manuallyLockedAt       DateTime?
+  resultFinalizedAt      DateTime?
+  visibleToPlayers       Boolean           @default(true)
+  externalProvider       String?
+  externalId             String?
+  providerUpdatesEnabled Boolean           @default(false)
+  manualOverride         Boolean           @default(true)
+  providerLastSyncAt     DateTime?
+  providerLastStatus     String?
+  providerRawPayload     Json?
+  predictions            Prediction[]
+  providerSyncLogs       ProviderSyncLog[]
+  createdAt              DateTime          @default(now())
+  updatedAt              DateTime          @updatedAt
+
+  @@unique([externalProvider, externalId])
+  @@index([competitionId, stage, matchday])
+  @@index([kickoffUtc])
+  @@index([tieId, leg])
+}
+
+model Prediction {
+  id               String              @id @default(cuid())
+  playerId         String
+  player           Player              @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  matchId          String
+  match            Match               @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  selection        PredictionSelection
+  qualifyingTeamId String?
+  qualifyingTeam   Team?               @relation("QualifierPick", fields: [qualifyingTeamId], references: [id], onDelete: SetNull)
+  submittedAt      DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+
+  @@unique([playerId, matchId])
+  @@index([matchId])
+  @@index([qualifyingTeamId])
+}
+
+model ProviderSyncLog {
+  id           String   @id @default(cuid())
+  matchId      String?
+  match        Match?   @relation(fields: [matchId], references: [id], onDelete: SetNull)
+  provider     String
+  externalId   String?
+  action       String
+  statusBefore String?
+  statusAfter  String?
+  metadataJson Json?
+  createdAt    DateTime @default(now())
+
+  @@index([matchId])
+  @@index([provider, externalId])
+  @@index([createdAt])
+}
+
+model AdminAuditLog {
+  id                  String   @id @default(cuid())
+  actorRedditUsername String
+  action              String
+  entityType          String
+  entityId            String?
+  metadataJson        Json?
+  createdAt           DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}
+
+model PageView {
+  id          String   @id @default(cuid())
+  path        String
+  visitorHash String
+  viewedAt    DateTime @default(now())
+
+  @@index([viewedAt])
+  @@index([visitorHash])
+}
