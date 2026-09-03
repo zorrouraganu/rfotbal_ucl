@@ -8,8 +8,8 @@ export const metadata: Metadata = {
   manifest: "/manifest.webmanifest",
 };
 
-export const viewport: Viewport = { themeColor: "#070a2d", colorScheme: "dark" };
+export const viewport: Viewport = { themeColor: "#02040a", colorScheme: "dark" };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="ro"><body>{children}</body></html>;
+  return <html lang="ro" data-scroll-behavior="smooth"><body>{children}</body></html>;
 }
