@@ -92,7 +92,7 @@ export default async function PredictionsPage({ searchParams }: {
         </section>
       )}
       <section className="match-grid">
-        {matches.map((match) => <MatchCard key={match.id} match={match} />)}
+        {matches.map((match, index) => <MatchCard key={match.id} match={match} eager={index < 2} />)}
       </section>
       {!matches.length && <div className="empty-state"><h2>Niciun meci</h2></div>}
     </PageTransition>

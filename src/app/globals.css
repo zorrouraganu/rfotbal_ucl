@@ -482,3 +482,92 @@ button { color: inherit; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+/* Desktop composition follows a native macOS window hierarchy: chrome, toolbar, content. */
+@media (min-width: 761px) {
+  body:has(.app-frame), body:has(.admin-frame) { padding: 18px; }
+
+  .app-frame {
+    width: min(1480px, 100%);
+    min-height: calc(100svh - 36px);
+    margin-inline: auto;
+    overflow: clip;
+    border: 1px solid rgba(239, 244, 255, .16);
+    border-radius: 30px;
+    background: rgba(4, 7, 13, .78);
+    box-shadow: 0 48px 140px rgba(0, 0, 0, .56), 0 8px 28px rgba(0, 0, 0, .32), inset 0 1px rgba(255, 255, 255, .08);
+    backdrop-filter: blur(18px) saturate(125%);
+  }
+  .topbar { top: 0; padding: 0; }
+  .topbar-inner {
+    width: 100%; min-height: 72px; gap: clamp(18px, 3vw, 52px); margin: 0;
+    border: 0; border-bottom: 1px solid rgba(235, 241, 255, .1); border-radius: 29px 29px 0 0; padding: 0 24px;
+    background: linear-gradient(180deg, rgba(28, 34, 47, .82), rgba(14, 19, 30, .7));
+    box-shadow: 0 1px rgba(0, 0, 0, .36);
+    backdrop-filter: blur(42px) saturate(150%); -webkit-backdrop-filter: blur(42px) saturate(150%);
+  }
+  .topbar-inner::before { inset: 0 9% auto; }
+  .brand-orbit { width: 2.2rem; height: 2.2rem; }
+  .brand-mark strong { font-size: .82rem; font-weight: 620; }
+  .brand-mark small { font-size: .55rem; }
+  .bottom-nav-inner { gap: .12rem; }
+  .bottom-nav a { min-height: 36px; gap: .4rem; border-radius: 11px; padding: 0 .72rem; font-size: .72rem; }
+  .bottom-nav a svg { width: 17px; height: 17px; stroke-width: 1.8; }
+  .nav-highlight { border-radius: 11px; background: linear-gradient(180deg, rgba(255,255,255,.15), rgba(255,255,255,.075)); box-shadow: 0 1px rgba(255,255,255,.12) inset, 0 5px 14px rgba(0,0,0,.18); }
+  .topbar-actions { gap: .72rem; }
+  .live-refresh { padding: .3rem .48rem; }
+  .admin-link, .admin-pill { padding: .34rem .62rem; }
+
+  .page-content { width: min(1220px, calc(100% - 64px)); padding: 42px 0 72px; }
+  .site-footer { display: none; }
+  .hero {
+    min-height: 122px; margin-bottom: 24px; border: 0; border-bottom: 1px solid rgba(235,241,255,.09); border-radius: 0; padding: 8px 4px 25px;
+    background: transparent; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none;
+  }
+  .hero::before, .hero::after { display: none; }
+  .hero h1 { font-size: clamp(2.8rem, 4.5vw, 4.25rem); font-weight: 610; letter-spacing: -.055em; }
+  .compact-hero { min-height: 122px; }
+
+  .chip-nav { padding: 0 0 12px; }
+  .chip-nav a { min-height: 32px; padding: .38rem .76rem; font-size: .67rem; }
+  .matchday-nav { gap: 2px; padding: 4px; border: 1px solid rgba(235,241,255,.1); border-radius: 14px; background: rgba(20,25,35,.72); box-shadow: inset 0 1px rgba(255,255,255,.05); }
+  .matchday-nav a { min-height: 34px; border: 0; border-radius: 10px; background: transparent; font-size: .74rem; backdrop-filter: none; }
+  .matchday-nav a:hover { background: rgba(255,255,255,.055); transform: none; }
+  .matchday-nav a.active { border: 0; background: linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.09)); box-shadow: 0 1px rgba(255,255,255,.11) inset,0 2px 7px rgba(0,0,0,.24); }
+
+  .stat-grid, .admin-stat-grid { gap: 1px; overflow: hidden; border: 1px solid rgba(235,241,255,.1); border-radius: 18px; background: rgba(235,241,255,.1); }
+  .stat-card, .admin-stat-grid article { min-height: 124px; border: 0; border-radius: 0; background: rgba(14,19,29,.88); box-shadow: inset 0 1px rgba(255,255,255,.035); backdrop-filter: none; }
+  .stat-card:hover, .admin-stat-grid article:hover { transform: none; background: rgba(21,27,39,.92); }
+  .stat-card.accent { background: linear-gradient(145deg,rgba(48,95,184,.5),rgba(43,39,83,.72)); }
+  .panel, .section-card, .table-scroll { border-radius: 18px; background: rgba(12,17,27,.88); box-shadow: 0 12px 34px rgba(0,0,0,.16),inset 0 1px rgba(255,255,255,.045); backdrop-filter: blur(12px); }
+
+  .match-grid { gap: 12px; }
+  .match-card { border-radius: 18px; background: rgba(13,18,28,.92); box-shadow: 0 10px 28px rgba(0,0,0,.14),inset 0 1px rgba(255,255,255,.045); backdrop-filter: blur(12px); }
+  .match-card::before { display: none; }
+  .match-card:hover { transform: none; border-color: rgba(235,241,255,.22); background: rgba(18,24,36,.94); box-shadow: 0 14px 34px rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.06); }
+  .market-option { min-height: 56px; border-radius: 11px; background: rgba(255,255,255,.025); }
+  .market-option:has(input:checked) { background: rgba(70,132,235,.24); border-color: rgba(123,177,255,.42); box-shadow: inset 0 1px rgba(255,255,255,.11); }
+  .button { min-height: 36px; border-radius: 10px; padding: .48rem .85rem; font-size: .7rem; }
+  .button:hover { transform: none; }
+  .button-primary { background: linear-gradient(180deg,#3f94ff,#1877e8); color: #fff; box-shadow: inset 0 1px rgba(255,255,255,.28),0 3px 10px rgba(0,75,190,.22); }
+  .button-secondary { background: linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.055)); }
+  .input { min-height: 38px; border-radius: 9px; padding: .48rem .68rem; }
+  .leaderboard-row { min-height: 72px; border-radius: 14px; background: rgba(12,17,27,.88); box-shadow: inset 0 1px rgba(255,255,255,.04); backdrop-filter: blur(12px); }
+  .leaderboard-row:hover { transform: none; background: rgba(19,25,37,.92); }
+
+  body:has(.admin-frame) { display: block; }
+  .admin-frame {
+    width: min(1480px, 100%); min-height: calc(100svh - 36px); margin: 0 auto; overflow: clip; padding: 0 32px 60px;
+    border: 1px solid rgba(239,244,255,.16); border-radius: 30px; background: rgba(4,7,13,.8);
+    box-shadow: 0 48px 140px rgba(0,0,0,.56),0 8px 28px rgba(0,0,0,.32),inset 0 1px rgba(255,255,255,.08);
+  }
+  .admin-header { min-height: 72px; margin: 0 -32px; padding: 0 24px; background: linear-gradient(180deg,rgba(28,34,47,.82),rgba(14,19,30,.7)); }
+  .admin-nav { top: 0; margin: 0 -32px; border: 0; border-bottom: 1px solid rgba(235,241,255,.09); border-radius: 0; padding: 6px 28px; background: rgba(10,14,23,.82); box-shadow: 0 1px rgba(0,0,0,.28); }
+  .admin-nav a { min-height: 34px; border-radius: 10px; padding: .44rem .66rem; }
+  .admin-content { padding-top: 40px; }
+  .admin-title h1 { font-size: clamp(2.8rem,4vw,4.1rem); font-weight: 610; }
+  .admin-card-grid { gap: 12px; }
+  .admin-action-card, .admin-match-card, .diagnostic-card, .admin-list article { border-radius: 16px; background: rgba(13,18,28,.9); box-shadow: inset 0 1px rgba(255,255,255,.04); backdrop-filter: blur(12px); }
+  .diagnostic-grid { gap: 12px; }
+  .diagnostic-columns { gap: 12px; }
+}

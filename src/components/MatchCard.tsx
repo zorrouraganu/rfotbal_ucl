@@ -7,7 +7,7 @@ import { marketLabel, scorePrediction } from "@/lib/scoring";
 
 type Team = { id: string; publicId: string; name: string; shortName: string; abbreviation: string; crestUrl: string | null };
 
-export function MatchCard({ match }: {
+export function MatchCard({ match, eager = false }: {
   match: {
     publicId: string;
     label: string;
@@ -30,6 +30,7 @@ export function MatchCard({ match }: {
       qualifyingTeam: { publicId: string } | null;
     }>;
   };
+  eager?: boolean;
 }) {
   const prediction = match.predictions[0] ?? null;
   const locked = isPredictionLocked(match);
@@ -63,7 +64,7 @@ export function MatchCard({ match }: {
       </div>
       <div className="match-teams">
         <div className="match-team home">
-          <TeamCrest {...match.homeTeam} size={52} />
+          <TeamCrest {...match.homeTeam} size={52} eager={eager} />
           <strong>{match.homeTeam.shortName}</strong>
         </div>
         <div className="match-score">
@@ -73,7 +74,7 @@ export function MatchCard({ match }: {
           <small><LocalDateTime value={match.kickoffUtc.toISOString()} /></small>
         </div>
         <div className="match-team away">
-          <TeamCrest {...match.awayTeam} size={52} />
+          <TeamCrest {...match.awayTeam} size={52} eager={eager} />
           <strong>{match.awayTeam.shortName}</strong>
         </div>
       </div>
