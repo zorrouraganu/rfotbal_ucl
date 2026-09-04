@@ -3,7 +3,7 @@
 import { BarChart3, CircleUserRound, ListChecks, TableProperties } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 const items = [
   { href: "/account", label: "Cont", icon: CircleUserRound },
@@ -15,16 +15,40 @@ const items = [
 export function PlayerNav() {
   const pathname = usePathname();
   const router = useRouter();
+  const navRef = useRef<HTMLDivElement>(null);
+  const linksRef = useRef<Array<HTMLAnchorElement | null>>([]);
+  const [highlight, setHighlight] = useState<{ left: number; top: number; width: number; height: number } | null>(null);
+
+  const measureHighlight = useCallback(() => {
+    const activeIndex = items.findIndex(({ href }) => href === pathname);
+    const link = linksRef.current[activeIndex];
+    if (!link) return;
+    setHighlight({
+      left: link.offsetLeft,
+      top: link.offsetTop,
+      width: link.offsetWidth,
+      height: link.offsetHeight,
+    });
+  }, [pathname]);
 
   useEffect(() => {
-    const warmRoutes = () => items.forEach(({ href }) => router.prefetch(href));
+    const warmRoutes = () => items.filter(({ href }) => href !== pathname).forEach(({ href }) => router.prefetch(href));
     if ("requestIdleCallback" in window) {
       const idleId = window.requestIdleCallback(warmRoutes, { timeout: 900 });
       return () => window.cancelIdleCallback(idleId);
     }
     const timer = setTimeout(warmRoutes, 250);
     return () => clearTimeout(timer);
-  }, [router]);
+  }, [pathname, router]);
+
+  useLayoutEffect(() => {
+    measureHighlight();
+    const nav = navRef.current;
+    if (!nav) return;
+    const observer = new ResizeObserver(measureHighlight);
+    observer.observe(nav);
+    return () => observer.disconnect();
+  }, [measureHighlight]);
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
@@ -42,8 +66,13 @@ export function PlayerNav() {
 
   return (
     <nav className="bottom-nav" aria-label="Navigație jucător">
-      <div className="bottom-nav-inner">
-        {items.map(({ href, label, icon: Icon }) => {
+      <div className="bottom-nav-inner" ref={navRef}>
+        <span
+          className={`nav-highlight ${highlight ? "is-ready" : ""}`}
+          aria-hidden="true"
+          style={highlight ?? undefined}
+        />
+        {items.map(({ href, label, icon: Icon }, index) => {
           const active = pathname === href;
           return (
             <Link
@@ -52,8 +81,8 @@ export function PlayerNav() {
               prefetch={false}
               onNavigate={markNavigationStarted}
               className={active ? "active" : ""}
+              ref={(node) => { linksRef.current[index] = node; }}
             >
-              {active && <span className="nav-highlight" aria-hidden="true" />}
               <Icon size={19} aria-hidden="true" />
               <span>{label}</span>
             </Link>

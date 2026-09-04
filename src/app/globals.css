@@ -76,16 +76,18 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
   border: 1px solid rgba(238,244,255,.13); border-radius: 22px; padding: 8px 10px 8px 14px;
   background: linear-gradient(135deg, rgba(21,28,46,.72), rgba(7,11,21,.56)); box-shadow: var(--float-shadow);
   backdrop-filter: blur(34px) saturate(155%); -webkit-backdrop-filter: blur(34px) saturate(155%); pointer-events: auto;
+  isolation: isolate; contain: paint; transform: translateZ(0); backface-visibility: hidden;
 }
 .topbar-inner::before { position: absolute; inset: 1px 12% auto; height: 1px; content: ""; background: linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent); pointer-events: none; }
 .bottom-nav { flex: 1; min-width: 0; }
-.bottom-nav-inner { display: flex; align-items: center; justify-content: center; gap: .22rem; }
+.bottom-nav-inner { position: relative; display: flex; align-items: center; justify-content: center; gap: .22rem; }
 .bottom-nav a { position: relative; isolation: isolate; min-height: 42px; display: inline-flex; align-items: center; gap: .46rem; border-radius: 14px; padding: 0 .78rem; color: #98a2b7; font-size: .76rem; font-weight: 590; transition: color .24s ease, transform .24s var(--spring); }
 .bottom-nav a:hover { color: #fff; transform: translateY(-1px); }
 .bottom-nav a.active { color: #fff; }
 .bottom-nav a.active svg, .admin-nav a.active svg { color: #79aaff; }
 .bottom-nav a > svg, .bottom-nav a > span:not(.nav-highlight) { position: relative; z-index: 1; }
-.nav-highlight { position: absolute; inset: 0; z-index: -1; border: 1px solid rgba(237,243,255,.14); border-radius: 14px; background: linear-gradient(145deg,rgba(255,255,255,.14),rgba(255,255,255,.055)); box-shadow: 0 8px 22px rgba(0,0,0,.16), inset 0 1px rgba(255,255,255,.17); backdrop-filter: blur(20px) saturate(160%); animation: liquid-tab-settle .22s var(--spring) both; }
+.nav-highlight { position: absolute; z-index: 0; opacity: 0; border: 1px solid rgba(237,243,255,.14); border-radius: 14px; background: linear-gradient(145deg,rgba(255,255,255,.14),rgba(255,255,255,.055)); box-shadow: 0 8px 22px rgba(0,0,0,.16), inset 0 1px rgba(255,255,255,.17); backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%); transform: translateZ(0); pointer-events: none; transition: left .32s var(--spring),top .32s var(--spring),width .32s var(--spring),height .32s var(--spring),opacity .16s ease; }
+.nav-highlight.is-ready { opacity: 1; }
 .topbar-actions { display: flex; align-items: center; justify-content: flex-end; gap: .68rem; }
 .reddit-id { max-width: 145px; overflow: hidden; color: #c6ccd8; font-size: .73rem; font-weight: 560; text-overflow: ellipsis; white-space: nowrap; transition: color .2s ease; }
 .reddit-id:hover { color: #fff; }
@@ -94,7 +96,8 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
 .text-button:hover { color: #fff; }
 .text-button.danger { color: var(--danger); }
 .live-refresh { display: inline-flex; align-items: center; gap: .38rem; border-radius: 999px; padding: .34rem .5rem; background: rgba(112,225,178,.075); color: #b9f3dc; }
-.live-refresh > span { width: 6px; height: 6px; border-radius: 50%; background: var(--success); box-shadow: 0 0 0 0 rgba(112,225,178,.45); animation: live-pulse 2.6s ease-out infinite; }
+.live-refresh > span { position: relative; width: 6px; height: 6px; border-radius: 50%; background: var(--success); }
+.live-refresh > span::after { position: absolute; inset: -4px; border: 1px solid rgba(112,225,178,.55); border-radius: inherit; content: ""; will-change: transform,opacity; animation: live-pulse 2.6s ease-out infinite; }
 .live-refresh small { font-size: .58rem; font-weight: 680; }
 
 .page-content { width: min(1200px, calc(100% - 40px)); margin-inline: auto; padding: 32px 0 84px; }
@@ -379,9 +382,8 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
 .audit-match { display: flex; align-items: center; gap: .35rem; }
 .market-badge { display: inline-grid; min-width: 36px; min-height: 31px; place-items: center; border-radius: 10px; background: rgba(112,167,255,.14); font-weight: 700; }
 
-@keyframes live-pulse { 0% { box-shadow: 0 0 0 0 rgba(112,225,178,.42); } 65%, 100% { box-shadow: 0 0 0 7px rgba(112,225,178,0); } }
+@keyframes live-pulse { 0% { opacity: .55; transform: scale(.45); } 65%, 100% { opacity: 0; transform: scale(1.45); } }
 @keyframes player-page-settle { from { transform: translateY(3px); } to { transform: none; } }
-@keyframes liquid-tab-settle { from { opacity: .64; transform: scale(.92); } to { opacity: 1; transform: none; } }
 @keyframes card-enter { from { opacity: 0; transform: translateY(16px) scale(.985); } to { opacity: 1; transform: none; } }
 
 @media (max-width: 1080px) {
@@ -732,4 +734,36 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
   .leaderboard-row { border-radius: 0; corner-shape: square; }
   .login-copy { margin-top: 34px; }
   .login-card h1 { font-size: clamp(2.75rem, 14vw, 3.8rem); }
+}
+
+/* Readable system type scale across desktop and touch layouts. */
+html { font-size: 17px; }
+body { font-size: 1rem; }
+.bottom-nav a { font-size: .84rem; }
+.reddit-id { font-size: .82rem; }
+.text-button { font-size: .8rem; }
+.live-refresh small, .admin-link, .admin-pill { font-size: .7rem; }
+.button, .reddit-button { font-size: .84rem; }
+.profile-form label { font-size: .84rem; }
+.stat-card span, .stat-card small, .admin-stat-grid span, .admin-stat-grid small { font-size: .78rem; }
+.chip-nav a, .zone-legend span { font-size: .8rem; }
+.match-list-heading > span, .prediction-progress-copy strong { font-size: .84rem; }
+.match-card-meta, .match-score small, .winner-pick-note, .prediction-receipt > span, .prediction-receipt small { font-size: .75rem; }
+.prediction-state, .status, .prediction-form legend, .market-option small { font-size: .68rem; }
+.market-desc { font-size: .7rem; line-height: 1.28; }
+.qualifier-grid span, .missed-pick { font-size: .8rem; }
+.league-table, .audit-table { font-size: .86rem; }
+.league-table th, .audit-table th { font-size: .72rem; }
+.table-note, .leader-stats span { font-size: .76rem; }
+.leader-points small { font-size: .67rem; }
+.admin-nav a, .admin-nav-brand { font-size: .8rem; }
+.diagnostic-table th, .diagnostic-table td, .admin-list small, .admin-list article > div > span { font-size: .76rem; }
+
+@media (max-width: 760px) {
+  .bottom-nav a { font-size: .78rem; }
+  .reddit-id { font-size: .76rem; }
+  .text-button { font-size: .75rem; }
+  .prediction-state { font-size: .65rem; }
+  .market-desc { font-size: .68rem; }
+  .leader-stats span { font-size: .72rem; }
 }
