@@ -772,3 +772,19 @@ body { font-size: 1rem; }
   .market-desc { font-size: .68rem; }
   .leader-stats span { font-size: .72rem; }
 }
+
+@media (min-width: 761px) {
+  .topbar-inner { min-height: 60px; gap: clamp(12px, 2vw, 30px); padding: 0 16px; }
+  .brand-mark { gap: .55rem; }
+  .brand-orbit { width: 2rem; height: 2rem; }
+  .brand-mark strong { font-size: .9rem; }
+  .bottom-nav-inner { gap: .08rem; }
+  .bottom-nav a { min-height: 34px; gap: .36rem; padding-inline: .55rem; font-size: .9rem; }
+  .topbar-actions { gap: .5rem; }
+  .live-refresh { padding: .28rem .44rem; }
+  .live-refresh small { font-size: .74rem; }
+  .subreddit-link { min-height: 30px; padding: .28rem .5rem; font-size: .78rem; }
+  .reddit-id { font-size: .86rem; }
+  .text-button { font-size: .84rem; }
+  .admin-link { font-size: .74rem; }
+}
