@@ -2,6 +2,7 @@ import "server-only";
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { cache } from "react";
 import { isAdminUsername } from "@/lib/adminIdentity";
 import { prisma } from "@/lib/prisma";
 import { getSessionTokenHash, SESSION_COOKIE, SESSION_DAYS } from "@/lib/sessions";
@@ -25,7 +26,7 @@ export async function clearSessionCookie() {
   (await cookies()).delete(SESSION_COOKIE);
 }
 
-export async function getCurrentPlayer() {
+export const getCurrentPlayer = cache(async function getCurrentPlayer() {
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
   if (!token) return null;
   const session = await prisma.session.findUnique({
@@ -34,7 +35,7 @@ export async function getCurrentPlayer() {
   });
   if (!session || session.expiresAt <= new Date() || !session.player.isActive) return null;
   return session.player;
-}
+});
 
 export async function requirePlayer() {
   const player = await getCurrentPlayer();

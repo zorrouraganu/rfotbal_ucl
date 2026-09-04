@@ -11,5 +11,10 @@ export const metadata: Metadata = {
 export const viewport: Viewport = { themeColor: "#02040a", colorScheme: "dark" };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="ro" data-scroll-behavior="smooth"><body>{children}</body></html>;
+  return (
+    <html lang="ro" data-scroll-behavior="smooth">
+      <head><link rel="preload" href="/assets/stadium-glass-2026.webp" as="image" type="image/webp" fetchPriority="high" /></head>
+      <body>{children}</body>
+    </html>
+  );
 }

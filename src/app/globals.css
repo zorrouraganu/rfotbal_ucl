@@ -18,7 +18,13 @@
   --danger: #ff8da1;
   --shadow: 0 24px 70px rgba(0, 0, 0, .24), inset 0 1px 0 rgba(255, 255, 255, .1);
   --float-shadow: 0 16px 48px rgba(0, 0, 0, .28), inset 0 1px 0 rgba(255, 255, 255, .12);
-  --radius: 26px;
+  --corner-window: 32px;
+  --corner-chrome: 24px;
+  --corner-surface: 20px;
+  --corner-card: 18px;
+  --corner-control: 12px;
+  --corner-inset: 9px;
+  --radius: var(--corner-surface);
   --spring: cubic-bezier(.2, .8, .2, 1);
 }
 
@@ -41,8 +47,7 @@ body {
 body::before {
   position: fixed; inset: 0; z-index: -2; content: ""; pointer-events: none;
   background: url("/assets/stadium-glass-2026.webp") center 42% / cover no-repeat;
-  filter: saturate(.82) brightness(.64);
-  transform: scale(1.015);
+  opacity: .64;
 }
 body::after {
   position: fixed; inset: 0; z-index: -1; content: ""; pointer-events: none;
@@ -54,7 +59,8 @@ body::after {
 :focus-visible { outline: 2px solid rgba(120,228,255,.92); outline-offset: 3px; }
 a { color: inherit; text-decoration: none; }
 button, input, select { font: inherit; }
-button { color: inherit; }
+button { appearance: none; color: inherit; }
+a, button, label { -webkit-tap-highlight-color: transparent; }
 .shell { width: min(1200px, calc(100% - 40px)); margin-inline: auto; }
 
 .brand-mark { display: inline-flex; align-items: center; gap: .7rem; color: #fff; white-space: nowrap; }
@@ -77,6 +83,7 @@ button { color: inherit; }
 .bottom-nav a { position: relative; isolation: isolate; min-height: 42px; display: inline-flex; align-items: center; gap: .46rem; border-radius: 14px; padding: 0 .78rem; color: #98a2b7; font-size: .76rem; font-weight: 590; transition: color .24s ease, transform .24s var(--spring); }
 .bottom-nav a:hover { color: #fff; transform: translateY(-1px); }
 .bottom-nav a.active { color: #fff; }
+.bottom-nav a.active svg, .admin-nav a.active svg { color: #79aaff; }
 .bottom-nav a > svg, .bottom-nav a > span:not(.nav-highlight) { position: relative; z-index: 1; }
 .nav-highlight { position: absolute; inset: 0; z-index: -1; border: 1px solid rgba(237,243,255,.14); border-radius: 14px; background: linear-gradient(145deg,rgba(255,255,255,.14),rgba(255,255,255,.055)); box-shadow: 0 8px 22px rgba(0,0,0,.16), inset 0 1px rgba(255,255,255,.17); backdrop-filter: blur(20px) saturate(160%); }
 .topbar-actions { display: flex; align-items: center; justify-content: flex-end; gap: .68rem; }
@@ -377,9 +384,9 @@ button { color: inherit; }
 .market-badge { display: inline-grid; min-width: 36px; min-height: 31px; place-items: center; border-radius: 10px; background: rgba(112,167,255,.14); font-weight: 700; }
 
 @keyframes live-pulse { 0% { box-shadow: 0 0 0 0 rgba(112,225,178,.42); } 65%, 100% { box-shadow: 0 0 0 7px rgba(112,225,178,0); } }
-@keyframes player-page-out { to { opacity: 0; transform: translateY(-4px) scale(.998); filter: blur(3px); } }
-@keyframes player-page-in { from { opacity: 0; transform: translateY(9px) scale(.996); filter: blur(5px); } }
-@keyframes card-enter { from { opacity: 0; transform: translateY(20px) scale(.98); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+@keyframes player-page-out { to { opacity: 0; transform: translateY(-3px) scale(.998); } }
+@keyframes player-page-in { from { opacity: 0; transform: translateY(7px) scale(.997); } }
+@keyframes card-enter { from { opacity: 0; transform: translateY(16px) scale(.985); } to { opacity: 1; transform: none; } }
 
 @media (max-width: 1080px) {
   .topbar-inner { gap: 1rem; }
@@ -396,7 +403,7 @@ button { color: inherit; }
 }
 
 @media (max-width: 760px) {
-  body::before { background-position: 64% 36%; filter: saturate(.75) brightness(.52); }
+  body::before { background-position: 64% 36%; opacity: .52; }
   .topbar { padding-top: 8px; }
   .topbar-inner { width: calc(100% - 20px); min-height: auto; display: grid; grid-template-columns: 1fr auto; gap: .5rem; border-radius: 20px; padding: 9px 10px 7px; }
   .topbar-inner > a { align-self: center; }
@@ -570,4 +577,81 @@ button { color: inherit; }
   .admin-action-card, .admin-match-card, .diagnostic-card, .admin-list article { border-radius: 16px; background: rgba(13,18,28,.9); box-shadow: inset 0 1px rgba(255,255,255,.04); backdrop-filter: blur(12px); }
   .diagnostic-grid { gap: 12px; }
   .diagnostic-columns { gap: 12px; }
+}
+
+/* Keep dynamic glass in chrome; content uses cheaper, calmer native materials. */
+.stat-card, .admin-stat-grid article, .diagnostic-card,
+.panel, .section-card, .table-scroll, .match-card, .leaderboard-row,
+.prediction-progress, .chip-nav a, .matchday-nav a, .admin-action-card,
+.admin-list article, .scenario-timeline article, .admin-match-card, .live-data-panel {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.stat-card, .admin-stat-grid article, .diagnostic-card { background: linear-gradient(145deg, rgba(19,25,38,.94), rgba(10,15,24,.92)); }
+.panel, .section-card, .table-scroll { background: rgba(10,15,24,.92); }
+.match-card { background: rgba(12,17,27,.94); }
+.leaderboard-row, .admin-action-card, .admin-list article, .scenario-timeline article, .admin-match-card { background: rgba(12,17,27,.93); }
+.match-card, .leaderboard-row, .admin-match-card { content-visibility: auto; contain-intrinsic-size: auto 440px; }
+
+@media (prefers-reduced-transparency: reduce) {
+  .topbar-inner, .nav-highlight, .admin-nav, .login-card { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: var(--glass-solid) !important; }
+}
+
+@media (prefers-contrast: more) {
+  :root { --line: rgba(239,244,255,.3); --line-strong: rgba(245,248,255,.5); --muted: #c4cad7; }
+  .topbar-inner, .admin-nav, .app-frame, .admin-frame { border-color: var(--line-strong); }
+}
+
+@media (min-width: 761px) {
+  .topbar-inner, .admin-header, .admin-nav { user-select: none; -webkit-user-select: none; }
+}
+
+/* macOS 27 continuous corners with concentric nested geometry. */
+.app-frame, .admin-frame, .login-card {
+  border-radius: var(--corner-window);
+  corner-shape: squircle;
+}
+.topbar-inner, .admin-nav, .hero {
+  border-radius: var(--corner-chrome);
+  corner-shape: squircle;
+}
+.panel, .section-card, .table-scroll, .stat-grid, .admin-stat-grid,
+.prediction-progress, .admin-action-card, .diagnostic-card, .diagnostic-panel,
+.live-data-panel, .admin-list article, .scenario-timeline article, .admin-match-card,
+.warning-panel, .diagnostic-error, .login-markets, .test-user-list button {
+  border-radius: var(--corner-surface);
+  corner-shape: squircle;
+}
+.match-card, .leaderboard-row {
+  border-radius: var(--corner-card);
+  corner-shape: squircle;
+}
+.button, .input, .market-option, .qualifier-grid span, .reddit-button,
+.nav-highlight, .bottom-nav a, .admin-nav a, .rank-dot, .market-badge,
+.prediction-receipt > strong, .timeline-number, .inline-admin-form {
+  border-radius: var(--corner-control);
+  corner-shape: squircle;
+}
+.matchday-nav {
+  border-radius: calc(var(--corner-control) + 4px);
+  corner-shape: squircle;
+}
+.matchday-nav a, .market-preview span {
+  border-radius: var(--corner-inset);
+  corner-shape: squircle;
+}
+.chip-nav a, .zone-legend span, .prediction-state, .status, .live-refresh,
+.admin-link, .admin-pill, .scenario-badge, .prediction-receipt b {
+  border-radius: 999px;
+  corner-shape: round;
+}
+
+@media (min-width: 761px) {
+  .topbar-inner {
+    border-radius: var(--corner-window) var(--corner-window) 0 0;
+    corner-shape: squircle squircle square square;
+  }
+  .admin-header { border-radius: var(--corner-window) var(--corner-window) 0 0; corner-shape: squircle squircle square square; }
+  .admin-nav { border-radius: 0; corner-shape: square; }
+  .stat-card, .admin-stat-grid article { border-radius: 0; corner-shape: square; }
 }

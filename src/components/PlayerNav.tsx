@@ -17,7 +17,13 @@ export function PlayerNav() {
   const router = useRouter();
 
   useEffect(() => {
-    items.forEach(({ href }) => router.prefetch(href));
+    const warmRoutes = () => items.forEach(({ href }) => router.prefetch(href));
+    if ("requestIdleCallback" in window) {
+      const idleId = window.requestIdleCallback(warmRoutes, { timeout: 900 });
+      return () => window.cancelIdleCallback(idleId);
+    }
+    const timer = setTimeout(warmRoutes, 250);
+    return () => clearTimeout(timer);
   }, [router]);
 
   return (
@@ -29,7 +35,7 @@ export function PlayerNav() {
             <Link
               key={href}
               href={href}
-              prefetch={true}
+              prefetch={false}
               transitionTypes={["player-tab"]}
               className={active ? "active" : ""}
             >
