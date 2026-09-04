@@ -12,9 +12,17 @@ test("player can enter locally, navigate the league phase, and see standings", a
   await expect(page.getByText(/Calificări \/ trofeu/i)).toHaveCount(0);
   await expect(page.locator('link[rel="icon"][href="/icon.png"]')).toHaveCount(1);
   const persistentHighlight = await page.locator(".nav-highlight").elementHandle();
+  const predictionsVersion = page.waitForResponse((response) => {
+    const url = new URL(response.url());
+    return url.pathname === "/api/live-version" && url.searchParams.get("scope") === "/app";
+  });
   await page.getByRole("link", { name: "Predicții" }).click();
   await expect(page.getByRole("heading", { name: "Predicții" })).toBeVisible();
+  await predictionsVersion;
   await expect(page.locator(".nav-highlight")).toHaveCount(1);
+  await expect.poll(() => page.locator(".player-page").evaluate((pageRoot) => getComputedStyle(pageRoot).animationName)).toBe("none");
+  await expect.poll(() => page.locator(".topbar-inner").evaluate((toolbar) => getComputedStyle(toolbar).backdropFilter)).toBe("none");
+  await expect.poll(() => page.locator(".team-crest img").first().evaluate((crest) => getComputedStyle(crest).filter)).toBe("none");
   await expect.poll(() => page.locator(".match-card").first().evaluate((card) => getComputedStyle(card).contentVisibility)).toBe("visible");
   const initialScrollHeight = await page.evaluate(() => document.documentElement.scrollHeight);
   await page.evaluate(() => scrollTo({ top: document.documentElement.scrollHeight, behavior: "instant" }));
