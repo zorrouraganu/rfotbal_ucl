@@ -50,7 +50,10 @@ test("player can enter locally, navigate the league phase, and see standings", a
   const saveAll = page.getByRole("button", { name: "Salvează toate predicțiile" });
   await expect(saveAll).toHaveCount(0);
   for (const index of [0, 1]) {
-    const form = page.locator(".prediction-form").nth(index);
+    const card = page.locator(".match-card").nth(index);
+    await expect(card.locator(".saved-prediction-summary")).toBeVisible();
+    await card.getByRole("button", { name: "Modifică" }).click();
+    const form = card.locator("form.prediction-form");
     const newSelection = await form.locator('input[name="selection"]').evaluateAll((inputs) =>
       (inputs as HTMLInputElement[]).find((input) => !input.checked)?.value,
     );
@@ -58,6 +61,18 @@ test("player can enter locally, navigate the league phase, and see standings", a
   }
   await expect(saveAll).toBeVisible();
   await saveAll.click();
+  await expect(saveAll).toHaveCount(0);
+  await expect(page.locator(".match-card").nth(0).locator(".saved-prediction-summary")).toBeVisible();
+  await expect(page.locator(".match-card").nth(1).locator(".saved-prediction-summary")).toBeVisible();
+  const firstCard = page.locator(".match-card").first();
+  await firstCard.getByRole("button", { name: "Modifică" }).click();
+  const firstForm = firstCard.locator("form.prediction-form");
+  const individualSelection = await firstForm.locator('input[name="selection"]').evaluateAll((inputs) =>
+    (inputs as HTMLInputElement[]).find((input) => !input.checked)?.value,
+  );
+  await firstForm.locator(`input[name="selection"][value="${individualSelection}"]`).check();
+  await firstForm.getByRole("button", { name: "Actualizează predicția" }).click();
+  await expect(firstCard.locator(".saved-prediction-summary")).toBeVisible();
   await expect(saveAll).toHaveCount(0);
   await page.getByRole("link", { name: "Clasament UCL" }).click();
   await expect(page.getByRole("heading", { name: "Clasament UCL" })).toBeVisible();

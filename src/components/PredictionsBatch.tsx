@@ -1,7 +1,7 @@
 "use client";
 
 import type { PredictionSelection } from "@prisma/client";
-import { createContext, useCallback, useContext, useMemo, useState, useTransition } from "react";
+import { createContext, useCallback, useContext, useMemo, useRef, useState, useTransition } from "react";
 import {
   savePredictionsBatchAction,
   type PredictionBatchActionState,
@@ -17,9 +17,14 @@ export type PredictionDraft = {
 type BatchContextValue = {
   pending: boolean;
   reportDraft: (matchPublicId: string, draft: PredictionDraft | null) => void;
+  registerSaveHandler: (matchPublicId: string, handler: () => void) => () => void;
 };
 
-const BatchContext = createContext<BatchContextValue>({ pending: false, reportDraft: () => undefined });
+const BatchContext = createContext<BatchContextValue>({
+  pending: false,
+  reportDraft: () => undefined,
+  registerSaveHandler: () => () => undefined,
+});
 
 export function PredictionsBatch({
   children,
@@ -31,6 +36,7 @@ export function PredictionsBatch({
   const [drafts, setDrafts] = useState<Map<string, PredictionDraft>>(() => new Map());
   const [state, setState] = useState<PredictionBatchActionState>({});
   const [pending, startTransition] = useTransition();
+  const saveHandlers = useRef(new Map<string, () => void>());
 
   const reportDraft = useCallback((matchPublicId: string, draft: PredictionDraft | null) => {
     setDrafts((current) => {
@@ -44,19 +50,33 @@ export function PredictionsBatch({
     });
   }, []);
 
+  const registerSaveHandler = useCallback((matchPublicId: string, handler: () => void) => {
+    saveHandlers.current.set(matchPublicId, handler);
+    return () => {
+      if (saveHandlers.current.get(matchPublicId) === handler) saveHandlers.current.delete(matchPublicId);
+    };
+  }, []);
+
   function saveAll(formData: FormData) {
+    const submittedMatchIds = [...drafts.keys()];
     startTransition(async () => {
       try {
         const result = await savePredictionsBatchAction({}, formData);
         setState(result);
-        if (result.success) setDrafts(new Map());
+        if (result.success) {
+          submittedMatchIds.forEach((matchPublicId) => saveHandlers.current.get(matchPublicId)?.());
+          setDrafts(new Map());
+        }
       } catch {
         setState({ error: "Predicțiile nu au putut fi salvate." });
       }
     });
   }
 
-  const context = useMemo(() => ({ pending, reportDraft }), [pending, reportDraft]);
+  const context = useMemo(
+    () => ({ pending, reportDraft, registerSaveHandler }),
+    [pending, registerSaveHandler, reportDraft],
+  );
   const outstanding = [...drafts.values()];
   const complete = outstanding.length > 0 && outstanding.every((draft) =>
     draft.selection && (!draft.requiresQualifier || draft.qualifyingTeamPublicId),

@@ -218,6 +218,13 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
 .qualifier-grid label:has(input:disabled):not(.is-auto-locked) span { opacity: .42; }
 .qualifier-grid label.is-auto-locked span { border-color: rgba(112,225,178,.36); background: rgba(112,225,178,.09); color: #b9ecd7; }
 .prediction-form > .button { width: 100%; margin-top: 10px; }
+.saved-prediction-summary { display: flex; align-items: center; justify-content: space-between; gap: .8rem; }
+.saved-prediction-value { min-width: 0; display: grid; grid-template-columns: auto auto 1fr; align-items: center; gap: .28rem .55rem; }
+.saved-prediction-value > span { color: #939eb1; font-size: .72rem; }
+.saved-prediction-value > strong { display: grid; min-width: 36px; height: 36px; place-items: center; border-radius: 11px; background: rgba(112,167,255,.16); font-size: .92rem; }
+.saved-prediction-value > small { overflow: hidden; color: #a5afc0; font-size: .7rem; text-overflow: ellipsis; white-space: nowrap; }
+.saved-prediction-value > small:last-child:not(:nth-child(3)) { grid-column: 1 / -1; color: #bac8dc; }
+.modify-prediction-button { flex: 0 0 auto; min-height: 36px; padding: .48rem .72rem; font-size: .72rem; }
 .batch-save-form { display: grid; gap: .65rem; margin-top: 18px; }
 .batch-save-button { width: 100%; min-height: 52px; font-size: .9rem; }
 .batch-save-note { margin: 0; color: var(--warning); font-size: .75rem; text-align: center; }
