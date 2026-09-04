@@ -6,6 +6,10 @@ export const metadata: Metadata = {
   description: "Predicții 1/X/2 și dublă șansă pentru UEFA Champions League 2026–27.",
   applicationName: "UCL Predictions",
   manifest: "/manifest.webmanifest",
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export const viewport: Viewport = { themeColor: "#02040a", colorScheme: "dark" };

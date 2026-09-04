@@ -655,3 +655,85 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
   .admin-nav { border-radius: 0; corner-shape: square; }
   .stat-card, .admin-stat-grid article { border-radius: 0; corner-shape: square; }
 }
+
+/* iOS 27 player surfaces: large titles, grouped content, quiet system materials. */
+.player-page > .hero {
+  min-height: 96px;
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 20px;
+  border: 0;
+  border-bottom: 1px solid rgba(235, 241, 255, .1);
+  border-radius: 0;
+  padding: 8px 2px 20px;
+  background: transparent;
+  box-shadow: none;
+  corner-shape: square;
+}
+.player-page > .hero h1 {
+  margin: 0;
+  font-size: clamp(2.35rem, 4vw, 3.25rem);
+  font-weight: 650;
+  line-height: 1;
+  letter-spacing: -.052em;
+}
+.account-hero {
+  justify-content: flex-end;
+  flex-direction: column;
+  align-items: flex-start !important;
+}
+.account-hero .nickname { margin: .42rem 0 0; }
+
+.stat-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+.stat-card.accent { background: rgba(14, 19, 29, .94); }
+.stat-card.accent strong { color: #78aaff; }
+
+.leaderboard-list {
+  display: grid;
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid rgba(235, 241, 255, .1);
+  border-radius: var(--corner-surface);
+  background: rgba(235, 241, 255, .1);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, .16), inset 0 1px rgba(255, 255, 255, .045);
+  corner-shape: squircle;
+}
+.leaderboard-row,
+.leaderboard-row:first-child {
+  min-height: 74px;
+  border: 0;
+  border-radius: 0;
+  background: rgba(12, 17, 27, .94);
+  box-shadow: none;
+  corner-shape: square;
+}
+.leaderboard-row:hover { transform: none; background: rgba(19, 25, 37, .96); }
+.leaderboard-row.is-current {
+  background: linear-gradient(90deg, rgba(44, 104, 204, .28), rgba(12, 17, 27, .94) 72%);
+  box-shadow: inset 3px 0 #6ca6ff;
+}
+.leader-stats { gap: .65rem; }
+.leader-stats span {
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  color: #8f99ac;
+  font-size: .65rem;
+}
+.leader-stats span + span { padding-left: .65rem; border-left: 1px solid rgba(235, 241, 255, .12); }
+
+.login-copy { margin-top: 38px; }
+.login-card h1 { margin-top: 0; font-size: clamp(2.8rem, 8vw, 4rem); }
+
+@media (max-width: 760px) {
+  .player-page > .hero { min-height: 82px; margin-bottom: 16px; padding: 4px 2px 16px; }
+  .player-page > .hero h1 { font-size: clamp(2.15rem, 10vw, 2.8rem); }
+  .stat-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; }
+  .stat-card { min-width: 0; min-height: 104px; border-radius: 0; padding: 14px 12px; corner-shape: square; }
+  .stat-card strong { font-size: clamp(1.65rem, 8vw, 1.95rem); }
+  .stat-card span, .stat-card small { overflow: hidden; font-size: .62rem; text-overflow: ellipsis; white-space: nowrap; }
+  .leaderboard-list { border-radius: 18px; }
+  .leaderboard-row { border-radius: 0; corner-shape: square; }
+  .login-copy { margin-top: 34px; }
+  .login-card h1 { font-size: clamp(2.75rem, 14vw, 3.8rem); }
+}

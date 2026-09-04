@@ -63,7 +63,6 @@ export default async function PredictionsPage({ searchParams }: {
   return (
     <PageTransition>
       <section className="hero compact-hero">
-        <p className="eyebrow">{competition.seasonLabel}</p>
         <h1>Predicții</h1>
       </section>
       <nav className="chip-nav" aria-label="Faza competiției">
@@ -76,7 +75,7 @@ export default async function PredictionsPage({ searchParams }: {
           ))}
         </nav>
       )}
-      <div className="section-heading match-list-heading"><div><p className="eyebrow">{stageLabels[selectedStage]}</p><h2>{matchday ? `Etapa ${matchday}` : stageLabels[selectedStage]}</h2></div><span>{saved}/{matches.length} salvate</span></div>
+      <div className="section-heading match-list-heading"><h2>{matchday ? `Etapa ${matchday}` : stageLabels[selectedStage]}</h2><span>{saved}/{matches.length} salvate</span></div>
       {!!matches.length && (
         <section className={`prediction-progress ${remaining ? "is-incomplete" : "is-complete"}`} aria-label="Progresul predicțiilor">
           <div className="prediction-progress-copy">

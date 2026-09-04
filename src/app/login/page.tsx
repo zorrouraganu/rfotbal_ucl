@@ -14,7 +14,6 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
       <section className="login-card">
         <BrandMark />
         <div className="login-copy">
-          <p className="eyebrow">Sezonul 2026–27</p>
           <h1>Predicții UCL</h1>
         </div>
         {error && <p className="form-error">Autentificarea Reddit nu a putut fi finalizată. Încearcă din nou.</p>}

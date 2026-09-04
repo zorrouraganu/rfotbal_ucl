@@ -21,7 +21,7 @@ export function AppFrame({ player, children }: { player: Player; children: React
         </div>
       </header>
       <main className="page-content">{children}</main>
-      <footer className="site-footer"><span>UCL Predictions · 2026–27</span><span>Rezultate live prin ESPN</span></footer>
+      <footer className="site-footer"><span>UCL Predictions</span><span>Rezultate live prin ESPN</span></footer>
     </div>
   );
 }
