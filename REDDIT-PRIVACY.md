@@ -1,10 +1,10 @@
 # Reddit account and privacy
 
-This document is the plain-language inventory of what UCL Predictions does when you choose **Sign in with Reddit**. It is intentionally specific so that the claims can be checked against the source.
+This document is the plain-language inventory of what UCL r/fotbal does when you choose **Sign in with Reddit**. It is intentionally specific so that the claims can be checked against the source.
 
 ## The short version
 
-UCL Predictions asks Reddit for one permission: `identity`. It uses the resulting temporary access token once, on the server, to fetch your Reddit account ID and username. The token is never written to the database, placed in the app session cookie, sent back to the browser, or reused as a refresh token.
+UCL r/fotbal asks Reddit for one permission: `identity`. It uses the resulting temporary access token once, on the server, to fetch your Reddit account ID and username. The token is never written to the database, placed in the app session cookie, sent back to the browser, or reused as a refresh token.
 
 The app cannot read your password, email, posts, comments, votes, saved items, subscriptions, moderation activity, chat, or private messages. It does not receive permission to post, comment, vote, subscribe, or modify your Reddit account.
 
@@ -42,7 +42,7 @@ The exact schema is in [`prisma/schema.prisma`](./prisma/schema.prisma). Session
 
 ## Data the application does not collect through Reddit
 
-UCL Predictions does not request, retrieve, or store:
+UCL r/fotbal does not request, retrieve, or store:
 
 - your Reddit password or email address;
 - posts, comments, drafts, or private messages;

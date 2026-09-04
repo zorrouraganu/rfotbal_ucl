@@ -98,6 +98,9 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
 .live-refresh > span { position: relative; width: 6px; height: 6px; border-radius: 50%; background: var(--success); }
 .live-refresh > span::after { position: absolute; inset: -4px; border: 1px solid rgba(112,225,178,.55); border-radius: inherit; content: ""; will-change: transform,opacity; animation: live-pulse 2.6s ease-out infinite; }
 .live-refresh small { font-size: .58rem; font-weight: 680; }
+.subreddit-link { min-height: 30px; display: inline-flex; align-items: center; gap: .38rem; border: 1px solid rgba(255,255,255,.1); border-radius: 999px; padding: .3rem .55rem; background: rgba(255,69,0,.09); color: #f2f4fa; font-size: .7rem; font-weight: 630; white-space: nowrap; transition: color .2s ease,background .2s ease,border-color .2s ease; }
+.subreddit-link:hover { border-color: rgba(255,125,84,.3); background: rgba(255,69,0,.16); color: #fff; }
+.subreddit-link svg { width: 16px; height: 16px; color: #ff7043; stroke-width: 1.9; }
 
 .page-content { width: min(1200px, calc(100% - 40px)); margin-inline: auto; padding: 32px 0 84px; }
 .player-page { min-height: 55svh; }
@@ -404,6 +407,8 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
   .topbar-inner { width: calc(100% - 20px); min-height: auto; display: grid; grid-template-columns: 1fr auto; gap: .5rem; border-radius: 20px; padding: 9px 10px 7px; }
   .topbar-inner > a { align-self: center; }
   .topbar-actions { gap: .52rem; }
+  .subreddit-link { width: 30px; min-height: 30px; justify-content: center; padding: 0; }
+  .subreddit-link span { display: none; }
   .reddit-id { max-width: 118px; }
   .text-button { font-size: .67rem; }
   .bottom-nav { grid-column: 1 / -1; grid-row: 2; width: 100%; overflow-x: auto; padding-top: .1rem; scrollbar-width: none; }
@@ -635,7 +640,7 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
   border-radius: var(--corner-inset);
   corner-shape: squircle;
 }
-.chip-nav a, .zone-legend span, .prediction-state, .status, .live-refresh,
+.chip-nav a, .zone-legend span, .prediction-state, .status, .live-refresh, .subreddit-link,
 .admin-link, .admin-pill, .scenario-badge, .prediction-receipt b {
   border-radius: 999px;
   corner-shape: round;

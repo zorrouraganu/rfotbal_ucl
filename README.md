@@ -1,4 +1,4 @@
-# UCL Predictions
+# UCL r/fotbal
 
 Romanian-first UEFA Champions League prediction app for the 2026–27 season. Players authenticate exclusively with Reddit, choose one betting-style market per match (`1`, `X`, `2`, `1X`, `X2`, or `12`), and add a qualifying-team pick on knockout second legs.
 

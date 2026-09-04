@@ -1,6 +1,6 @@
 {
-  "name": "UCL Predictions",
-  "short_name": "UCL Picks",
+  "name": "UCL r/fotbal",
+  "short_name": "UCL r/fotbal",
   "description": "Predicții pentru UEFA Champions League",
   "start_url": "/account",
   "display": "standalone",

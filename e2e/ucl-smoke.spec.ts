@@ -7,6 +7,13 @@ test("player can enter locally, navigate the league phase, and see standings", a
   await page.getByRole("button", { name: /optic_oracle/i }).click();
   await expect(page).toHaveURL(/\/account$/);
   await expect(page.getByRole("heading", { name: /optic_oracle/i })).toBeVisible();
+  await expect(page.getByText("UCL r/fotbal", { exact: true }).first()).toBeVisible();
+  const subredditLink = page.getByRole("link", { name: "Deschide r/fotbal pe Reddit" });
+  await expect(subredditLink).toHaveAttribute("href", "https://www.reddit.com/r/fotbal/");
+  await expect(subredditLink.locator("svg")).toBeVisible();
+  if ((page.viewportSize()?.width ?? 0) <= 760) await expect(subredditLink.locator("span")).toBeHidden();
+  else await expect(subredditLink.locator("span")).toBeVisible();
+  await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
   await expect.poll(() => page.evaluate(() => Number.parseFloat(getComputedStyle(document.body).fontSize))).toBeGreaterThanOrEqual(17);
   await expect(page.locator(".player-page .eyebrow")).toHaveCount(0);
   await expect(page.getByText(/Calificări \/ trofeu/i)).toHaveCount(0);
