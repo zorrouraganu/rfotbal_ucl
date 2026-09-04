@@ -97,10 +97,12 @@ export function PredictionForm({
         <div className="saved-prediction-value">
           <span>Predicția ta</span>
           <strong>{marketLabel(selectedSelection)}</strong>
-          {selectedOption && <small>{selectedOption.description}</small>}
-          {winnerKind && selectedQualifier && (
-            <small>{winnerKind === "champion" ? "Câștigătoare" : "Calificată"}: {selectedQualifier.shortName}</small>
-          )}
+          <div className="saved-prediction-details">
+            {selectedOption && <small>{selectedOption.description}</small>}
+            {winnerKind && selectedQualifier && (
+              <small>{winnerKind === "champion" ? "Câștigătoare" : "Calificată"}: {selectedQualifier.shortName}</small>
+            )}
+          </div>
         </div>
         <button
           type="button"

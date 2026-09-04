@@ -52,6 +52,13 @@ test("player can enter locally, navigate the league phase, and see standings", a
   for (const index of [0, 1]) {
     const card = page.locator(".match-card").nth(index);
     await expect(card.locator(".saved-prediction-summary")).toBeVisible();
+    if ((page.viewportSize()?.width ?? 0) <= 500) {
+      const predictionBox = await card.locator(".saved-prediction-value").boundingBox();
+      const modifyBox = await card.getByRole("button", { name: "Modifică" }).boundingBox();
+      expect(predictionBox).not.toBeNull();
+      expect(modifyBox).not.toBeNull();
+      expect((modifyBox?.y ?? 0) >= (predictionBox?.y ?? 0) + (predictionBox?.height ?? 0)).toBe(true);
+    }
     await card.getByRole("button", { name: "Modifică" }).click();
     const form = card.locator("form.prediction-form");
     const newSelection = await form.locator('input[name="selection"]').evaluateAll((inputs) =>
