@@ -15,6 +15,12 @@ test("player can enter locally, navigate the league phase, and see standings", a
   await page.getByRole("link", { name: "Predicții" }).click();
   await expect(page.getByRole("heading", { name: "Predicții" })).toBeVisible();
   await expect(page.locator(".nav-highlight")).toHaveCount(1);
+  await expect.poll(() => page.locator(".match-card").first().evaluate((card) => getComputedStyle(card).contentVisibility)).toBe("visible");
+  const initialScrollHeight = await page.evaluate(() => document.documentElement.scrollHeight);
+  await page.evaluate(() => scrollTo({ top: document.documentElement.scrollHeight, behavior: "instant" }));
+  await page.waitForTimeout(100);
+  await expect.poll(() => page.evaluate(() => document.documentElement.scrollHeight)).toBe(initialScrollHeight);
+  await page.evaluate(() => scrollTo({ top: 0, behavior: "instant" }));
   await expect.poll(() => persistentHighlight?.evaluate((node) => node === document.querySelector(".nav-highlight"))).toBe(true);
   await expect.poll(() => page.evaluate(() => document.documentElement.dataset.playerNavigating ?? "")).toBe("");
   await expect(page.getByLabel("Progresul predicțiilor")).toBeVisible();
