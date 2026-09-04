@@ -85,7 +85,7 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
 .bottom-nav a.active { color: #fff; }
 .bottom-nav a.active svg, .admin-nav a.active svg { color: #79aaff; }
 .bottom-nav a > svg, .bottom-nav a > span:not(.nav-highlight) { position: relative; z-index: 1; }
-.nav-highlight { position: absolute; inset: 0; z-index: -1; border: 1px solid rgba(237,243,255,.14); border-radius: 14px; background: linear-gradient(145deg,rgba(255,255,255,.14),rgba(255,255,255,.055)); box-shadow: 0 8px 22px rgba(0,0,0,.16), inset 0 1px rgba(255,255,255,.17); backdrop-filter: blur(20px) saturate(160%); }
+.nav-highlight { position: absolute; inset: 0; z-index: -1; border: 1px solid rgba(237,243,255,.14); border-radius: 14px; background: linear-gradient(145deg,rgba(255,255,255,.14),rgba(255,255,255,.055)); box-shadow: 0 8px 22px rgba(0,0,0,.16), inset 0 1px rgba(255,255,255,.17); backdrop-filter: blur(20px) saturate(160%); animation: liquid-tab-settle .22s var(--spring) both; }
 .topbar-actions { display: flex; align-items: center; justify-content: flex-end; gap: .68rem; }
 .reddit-id { max-width: 145px; overflow: hidden; color: #c6ccd8; font-size: .73rem; font-weight: 560; text-overflow: ellipsis; white-space: nowrap; transition: color .2s ease; }
 .reddit-id:hover { color: #fff; }
@@ -98,11 +98,7 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
 .live-refresh small { font-size: .58rem; font-weight: 680; }
 
 .page-content { width: min(1200px, calc(100% - 40px)); margin-inline: auto; padding: 32px 0 84px; }
-.player-page { min-height: 55svh; }
-::view-transition-group(.player-page) { animation-duration: .42s; animation-timing-function: var(--spring); }
-::view-transition-old(.player-page) { animation: player-page-out .2s ease both; }
-::view-transition-new(.player-page) { animation: player-page-in .42s var(--spring) both; }
-::view-transition-group(player-nav-highlight) { z-index: 110; animation-duration: .38s; animation-timing-function: var(--spring); }
+.player-page { min-height: 55svh; animation: player-page-settle .24s var(--spring) both; }
 .site-footer { width: min(1200px, calc(100% - 40px)); display: flex; justify-content: space-between; gap: 1rem; margin: auto; padding: 24px 0 34px; border-top: 1px solid rgba(235,241,255,.08); color: #68738a; font-size: .68rem; }
 
 .hero {
@@ -384,8 +380,8 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
 .market-badge { display: inline-grid; min-width: 36px; min-height: 31px; place-items: center; border-radius: 10px; background: rgba(112,167,255,.14); font-weight: 700; }
 
 @keyframes live-pulse { 0% { box-shadow: 0 0 0 0 rgba(112,225,178,.42); } 65%, 100% { box-shadow: 0 0 0 7px rgba(112,225,178,0); } }
-@keyframes player-page-out { to { opacity: 0; transform: translateY(-3px) scale(.998); } }
-@keyframes player-page-in { from { opacity: 0; transform: translateY(7px) scale(.997); } }
+@keyframes player-page-settle { from { transform: translateY(3px); } to { transform: none; } }
+@keyframes liquid-tab-settle { from { opacity: .64; transform: scale(.92); } to { opacity: 1; transform: none; } }
 @keyframes card-enter { from { opacity: 0; transform: translateY(16px) scale(.985); } to { opacity: 1; transform: none; } }
 
 @media (max-width: 1080px) {

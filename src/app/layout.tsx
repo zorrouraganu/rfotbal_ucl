@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   applicationName: "UCL Predictions",
   manifest: "/manifest.webmanifest",
   icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    icon: [{ url: "/icon.png", type: "image/png", sizes: "360x360" }],
     apple: "/apple-touch-icon.png",
   },
 };

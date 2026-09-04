@@ -14,8 +14,10 @@ export function LiveRefresh() {
     function refresh() {
       if (document.visibilityState !== "visible" || !navigator.onLine) return;
       if (document.querySelector("form:focus-within")) return;
+      if (document.documentElement.dataset.playerNavigating === "true") return;
 
       const run = () => {
+        if (document.documentElement.dataset.playerNavigating === "true") return;
         router.refresh();
         lastRefreshAt.current = Date.now();
       };

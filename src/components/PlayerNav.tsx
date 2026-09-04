@@ -3,7 +3,7 @@
 import { BarChart3, CircleUserRound, ListChecks, TableProperties } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, ViewTransition } from "react";
+import { useEffect } from "react";
 
 const items = [
   { href: "/account", label: "Cont", icon: CircleUserRound },
@@ -26,6 +26,20 @@ export function PlayerNav() {
     return () => clearTimeout(timer);
   }, [router]);
 
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      delete document.documentElement.dataset.playerNavigating;
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [pathname]);
+
+  function markNavigationStarted() {
+    document.documentElement.dataset.playerNavigating = "true";
+    window.setTimeout(() => {
+      delete document.documentElement.dataset.playerNavigating;
+    }, 2_500);
+  }
+
   return (
     <nav className="bottom-nav" aria-label="Navigație jucător">
       <div className="bottom-nav-inner">
@@ -36,14 +50,10 @@ export function PlayerNav() {
               key={href}
               href={href}
               prefetch={false}
-              transitionTypes={["player-tab"]}
+              onNavigate={markNavigationStarted}
               className={active ? "active" : ""}
             >
-              {active && (
-                <ViewTransition name="player-nav-highlight">
-                  <span className="nav-highlight" aria-hidden="true" />
-                </ViewTransition>
-              )}
+              {active && <span className="nav-highlight" aria-hidden="true" />}
               <Icon size={19} aria-hidden="true" />
               <span>{label}</span>
             </Link>
