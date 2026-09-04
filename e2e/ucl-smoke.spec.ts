@@ -17,6 +17,8 @@ test("player can enter locally, navigate the league phase, and see standings", a
     await expect(subredditLink.locator("span")).toBeVisible();
     await expect.poll(() => page.locator(".topbar-inner").evaluate((toolbar) => toolbar.getBoundingClientRect().height)).toBeLessThanOrEqual(62);
     await expect.poll(() => page.locator(".bottom-nav a").first().evaluate((link) => Number.parseFloat(getComputedStyle(link).fontSize))).toBeGreaterThanOrEqual(15);
+    await expect.poll(() => page.locator(".topbar .brand-title").evaluate((title) => Number.parseFloat(getComputedStyle(title).fontSize))).toBeGreaterThanOrEqual(18);
+    await expect.poll(() => page.locator(".topbar .brand-title").evaluate((title) => Number.parseInt(getComputedStyle(title).fontWeight, 10))).toBeGreaterThanOrEqual(680);
   }
   await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
   await expect.poll(() => page.evaluate(() => Number.parseFloat(getComputedStyle(document.body).fontSize))).toBeGreaterThanOrEqual(17);

@@ -775,9 +775,13 @@ body { font-size: 1rem; }
 
 @media (min-width: 761px) {
   .topbar-inner { min-height: 60px; gap: clamp(12px, 2vw, 30px); padding: 0 16px; }
+  .topbar-inner > a:first-child { flex: 0 0 auto; }
   .brand-mark { gap: .55rem; }
   .brand-orbit { width: 2rem; height: 2rem; }
   .brand-mark strong { font-size: .9rem; }
+  .topbar .brand-mark { gap: .68rem; }
+  .topbar .brand-orbit { width: 2.14rem; height: 2.14rem; }
+  .topbar .brand-title { color: #fff; font-size: 1.08rem; font-weight: 700; line-height: 1; letter-spacing: -.032em; text-shadow: 0 1px 12px rgba(0,0,0,.24); }
   .bottom-nav-inner { gap: .08rem; }
   .bottom-nav a { min-height: 34px; gap: .36rem; padding-inline: .55rem; font-size: .9rem; }
   .topbar-actions { gap: .5rem; }

@@ -6,7 +6,7 @@ export function BrandMark({ compact = false }: { compact?: boolean }) {
       <Image src="/icon.png" alt="" width={56} height={56} className="brand-orbit" priority />
       {!compact && (
         <span>
-          <strong>UCL r/fotbal</strong>
+          <strong className="brand-title">UCL r/fotbal</strong>
         </span>
       )}
     </div>
