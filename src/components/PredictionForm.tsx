@@ -1,8 +1,9 @@
 "use client";
 
 import type { PredictionSelection } from "@prisma/client";
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { savePredictionAction, type PredictionActionState } from "@/app/app/actions";
+import { usePredictionsBatch } from "@/components/PredictionsBatch";
 import { automaticFinalWinnerSide, marketLabel, marketOptions } from "@/lib/scoring";
 
 type Team = { publicId: string; name: string; shortName: string };
@@ -20,6 +21,7 @@ export function PredictionForm({
   qualifierTeams: Team[] | null;
   winnerKind: "qualifier" | "champion" | null;
 }) {
+  const { pending: batchPending, reportDraft } = usePredictionsBatch();
   const [state, formAction, pending] = useActionState<PredictionActionState, FormData>(
     savePredictionAction,
     {},
@@ -32,6 +34,20 @@ export function PredictionForm({
   const winnerLocked = winnerKind === "champion" && automaticWinnerSide !== null;
   const winnerWaitingForMarket = winnerKind === "champion" && selectedSelection === null;
   const automaticWinner = automaticWinnerSide === "HOME" ? qualifierTeams?.[0] : automaticWinnerSide === "AWAY" ? qualifierTeams?.[1] : null;
+  const requiresQualifier = Boolean(qualifierTeams && winnerKind);
+
+  useEffect(() => {
+    const dirty = selectedSelection !== existingSelection
+      || (requiresQualifier && selectedWinner !== existingQualifierPublicId);
+    reportDraft(matchPublicId, dirty ? {
+      matchPublicId,
+      selection: selectedSelection,
+      qualifyingTeamPublicId: selectedWinner,
+      requiresQualifier,
+    } : null);
+  }, [existingQualifierPublicId, existingSelection, matchPublicId, reportDraft, requiresQualifier, selectedSelection, selectedWinner]);
+
+  useEffect(() => () => reportDraft(matchPublicId, null), [matchPublicId, reportDraft]);
 
   function selectMarket(selection: PredictionSelection) {
     const previousAutomaticSide = selectedSelection && winnerKind === "champion"
@@ -47,7 +63,7 @@ export function PredictionForm({
   return (
     <form action={formAction} className="prediction-form">
       <input type="hidden" name="matchPublicId" value={matchPublicId} />
-      <fieldset disabled={pending}>
+      <fieldset disabled={pending || batchPending}>
         <legend>Alege piața</legend>
         <div className="market-grid">
           {marketOptions.map((option) => (
@@ -68,7 +84,7 @@ export function PredictionForm({
         </div>
       </fieldset>
       {qualifierTeams && winnerKind && (
-        <fieldset disabled={pending} className="qualifier-fieldset">
+        <fieldset disabled={pending || batchPending} className="qualifier-fieldset">
           <legend>{winnerKind === "champion" ? "Cine câștigă trofeul?" : "Cine se califică?"} <span>+2p</span></legend>
           {winnerKind === "champion" && (
             <p className={`winner-pick-note ${winnerLocked ? "is-locked" : ""}`}>
@@ -100,7 +116,7 @@ export function PredictionForm({
       )}
       {state.error && <p className="form-error" role="alert">{state.error}</p>}
       {state.success && <p className="form-success" role="status">Predicția a fost salvată.</p>}
-      <button type="submit" className="button button-primary" disabled={pending}>
+      <button type="submit" className="button button-primary" disabled={pending || batchPending}>
         {pending ? "Se salvează…" : existingSelection ? "Actualizează predicția" : "Salvează predicția"}
       </button>
     </form>

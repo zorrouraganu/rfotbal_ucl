@@ -2,6 +2,7 @@ import type { CompetitionStage } from "@prisma/client";
 import Link from "next/link";
 import { MatchCard } from "@/components/MatchCard";
 import { PageTransition } from "@/components/PageTransition";
+import { PredictionsBatch } from "@/components/PredictionsBatch";
 import { requirePlayer } from "@/lib/auth-server";
 import { prisma } from "@/lib/prisma";
 import { stageLabels, stageOrder } from "@/lib/stages";
@@ -90,9 +91,11 @@ export default async function PredictionsPage({ searchParams }: {
           <div className="prediction-progress-track" aria-hidden="true"><span style={{ width: `${completion}%` }} /></div>
         </section>
       )}
-      <section className="match-grid">
-        {matches.map((match, index) => <MatchCard key={match.id} match={match} eager={index < 2} />)}
-      </section>
+      <PredictionsBatch hasUnsavedPredictions={remaining > 0}>
+        <section className="match-grid">
+          {matches.map((match, index) => <MatchCard key={match.id} match={match} eager={index < 2} />)}
+        </section>
+      </PredictionsBatch>
       {!matches.length && <div className="empty-state"><h2>Niciun meci</h2></div>}
     </PageTransition>
   );

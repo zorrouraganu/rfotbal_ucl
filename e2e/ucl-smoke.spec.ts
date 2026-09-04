@@ -40,6 +40,18 @@ test("player can enter locally, navigate the league phase, and see standings", a
   await expect.poll(() => page.evaluate(() => document.documentElement.dataset.playerNavigating ?? "")).toBe("");
   await expect(page.getByLabel("Progresul predicțiilor")).toBeVisible();
   await expect(page.locator(".match-card .prediction-state").first()).toBeVisible();
+  const saveAll = page.getByRole("button", { name: "Salvează toate predicțiile" });
+  await expect(saveAll).toHaveCount(0);
+  for (const index of [0, 1]) {
+    const form = page.locator(".prediction-form").nth(index);
+    const newSelection = await form.locator('input[name="selection"]').evaluateAll((inputs) =>
+      (inputs as HTMLInputElement[]).find((input) => !input.checked)?.value,
+    );
+    await form.locator(`input[name="selection"][value="${newSelection}"]`).check();
+  }
+  await expect(saveAll).toBeVisible();
+  await saveAll.click();
+  await expect(saveAll).toHaveCount(0);
   await page.getByRole("link", { name: "Clasament UCL" }).click();
   await expect(page.getByRole("heading", { name: "Clasament UCL" })).toBeVisible();
   await expect(page.locator(".league-table tbody tr")).toHaveCount(36);
